@@ -15,6 +15,7 @@ communication_number_qualifier = {'AP': 'alternate_telephone',
                                   'TE': 'telephone',
                                   'WP': 'work_phone'}
 const.line_ending = '~\n'
+current_processing_coverage = ''
 
 def parse_line(str_line):
     line_collection = str_line.split('*')
@@ -71,14 +72,26 @@ def parse_line(str_line):
             record['birth_date'] = datetime.datetime.strptime(line_collection[2].replace(const.line_ending, ''),'%Y%m%d')
 
         record['gender_code'] = line_collection[3].upper().replace(const.line_ending, '')
+    elif line_collection[0] == 'HD':
+        coverage = dict()
+        coverage['maintenance_type_code'] = line_collection[1]
+        coverage['maintenance_reason_code'] = line_collection[2]
+        coverage['insurance_line_code'] = line_collection[3].replace(const.line_ending, '')
+        global current_processing_coverage
+        current_processing_coverage = coverage['insurance_line_code'] + '_coverage'
+        record[current_processing_coverage] = coverage
+    elif line_collection[0] == 'DTP' and line_collection[1] == '348':
+        coverage = record[current_processing_coverage]
 
+        if line_collection[2] == 'D8':
+            coverage['coverage_begin_date'] = datetime.datetime.strptime(line_collection[3].replace(const.line_ending, ''),'%Y%m%d')
 
 def read_file():
     __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
     with open(os.path.join(__location__, 'sample-enroll.834')) as data:
         for each_line in data:
-            if each_line.startswith('INS') and record.items() != 0:
+            if (each_line.startswith('INS') or each_line.startswith('SE')) and record.items() != 0:
                 record_id = records_collection.insert(record)
                 print(record_id)
                 record.clear()
