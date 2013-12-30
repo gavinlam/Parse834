@@ -1,5 +1,5 @@
 Queries
 
-> db.records_collections.find( { 'HLT_coverage.insurance_line_code': 'HLT' }, {l
-ast_name: 1, first_name: 1, social_security_number: 1 } ).pretty()
+db.records_collections.find( { 'HLT_coverage.insurance_line_code': 'HLT' }, {last_name: 1, first_name: 1, social_security_number: 1 } ).pretty()
 
+db.records_collections.find( { 'HLT_coverage.coverage_begin_date': {'$gte': new Date(2013-08-09)} }, {last_name: 1, first_name: 1, social_security_number: 1 } ).pretty()
