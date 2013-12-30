@@ -102,6 +102,9 @@ def parse_line(str_line):
         if line_collection[2] == 'D8':
             coverage['coverage_begin_date'] = datetime.datetime.strptime(line_collection[3].replace(const.line_ending, ''),'%Y%m%d')
 
+"""
+Reads the sample-enroll.843 and processes the file line-by-line
+"""
 def read_file():
     __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
@@ -123,4 +126,10 @@ subscriber_db = client.subscriber_db
 records_collection = subscriber_db.records_collections
 
 read_file()
-#print(record)
+query1 = records_collection.find( { 'HLT_coverage.insurance_line_code': 'HLT' }, fields = {'last_name': 1, 'first_name': 1, 'social_security_number': 1 } )
+records = dict((entry['_id'], entry) for entry in query1)
+print(records)
+
+query2 = records_collection.find( { 'HLT_coverage.coverage_begin_date': {'$gte': datetime.datetime.strptime('20130809', '%Y%m%d')} }, {'last_name': 1, 'first_name': 1, 'social_security_number': 1 } )
+records = dict((entry['_id'], entry) for entry in query2)
+print(records)
