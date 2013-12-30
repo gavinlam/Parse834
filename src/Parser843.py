@@ -108,7 +108,7 @@ Reads the sample-enroll.843 and processes the file line-by-line
 def read_file():
     __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
-    with open(os.path.join(__location__, 'sample-enroll.834')) as data:
+    with open(os.path.join(__location__, '..\\resources\\sample-enroll.834')) as data:
         for each_line in data:
             if (each_line.startswith('INS') or each_line.startswith('SE')) and record.items() != 0:
                 record_id = records_collection.insert(record)
