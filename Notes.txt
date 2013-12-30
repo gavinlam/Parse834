@@ -1,0 +1,5 @@
+Queries
+
+> db.records_collections.find( { 'HLT_coverage.insurance_line_code': 'HLT' }, {l
+ast_name: 1, first_name: 1, social_security_number: 1 } ).pretty()
+
