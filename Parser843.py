@@ -1,10 +1,21 @@
+"""
+This module parses the sample-enroll.843 file. The file name is hard coded into the script. The module parses
+the 843 file one line at a time and builds a record dictionary. Once the record dictionary is complete, it is
+persisted to a MongoDB collection.
+"""
+
 import const
 import datetime
 import os
-import pymongo
 from pymongo import MongoClient
 
+#The record currently being processed
 record = dict()
+
+#The coverage currently being processed
+current_processing_coverage = ''
+
+#All of the communication qualifiers
 communication_number_qualifier = {'AP': 'alternate_telephone',
                                   'BN': 'beeper_number',
                                   'CP': 'cellular_phone',
@@ -14,9 +25,14 @@ communication_number_qualifier = {'AP': 'alternate_telephone',
                                   'HP': 'home_phone',
                                   'TE': 'telephone',
                                   'WP': 'work_phone'}
+#End of line notation
 const.line_ending = '~\n'
-current_processing_coverage = ''
 
+"""
+Parses a line from the 843 file.
+
+@param str_line - The line to be parsed
+"""
 def parse_line(str_line):
     line_collection = str_line.split('*')
 
@@ -99,6 +115,9 @@ def read_file():
             parse_line(each_line)
 
 
+###############################################################################
+# Start of main application
+###############################################################################
 client = MongoClient()
 subscriber_db = client.subscriber_db
 records_collection = subscriber_db.records_collections
